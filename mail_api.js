@@ -54,6 +54,7 @@ async function main(){
 //main();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 
 app.post('/api',(request,response) => {
     console.log("I RECEIVED DATA!!");
@@ -65,7 +66,36 @@ app.post('/api',(request,response) => {
     });
     response.send(request.body);
 }
-)
+);
+
+app.post('/login',(request,response) => {
+    console.log("I RECEIVED DATA!!");
+    console.log(request.body);
+    const sql = `SELECT * FROM users WHERE address = "${request.body.address}" AND password = "${request.body.password}"`;
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Executed query");
+        if(JSON.stringify(result) != '[]'){
+            response.send("Found user");
+        } else{
+            response.send("Wrong input");
+        };
+    });
+});
+
+app.get('/login',(request,response) => {
+    console.log("Got a login GET");
+    console.log(request.body);
+    response.send("Got a /login GET");
+}
+);
+
+app.get('/',(request,response) => {
+    console.log("Got a / GET");
+    console.log(request.body);
+    response.send("Got a / GET");
+}
+);
 
 app.use('/', router);
 app.listen(3000);
