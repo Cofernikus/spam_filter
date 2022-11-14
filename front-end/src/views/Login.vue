@@ -8,7 +8,6 @@
     <input v-model="username_input" />
     <input v-model="password_input" />
     <gumb text="Login" @click="login" />
-    
   </div>
 </template>
 
@@ -23,9 +22,10 @@ const password_input = ref("");
 const loading = ref(false);
 const data = ref();
 
-
-
 async function login() {
+  const audio = new Audio("/test.mp3");
+  audio.play();
+
   const data = {
     id: "xyz",
     username: "test"
@@ -34,28 +34,24 @@ async function login() {
   if (username_input.value.length <= 4) {
     alert("!!!! lol");
     loading.value = false;
-  }
-  else{
+  } else {
     try {
-    const request = await axios.post("http://localhost:3000/login", {
-      address: username_input.value,
-      password: password_input.value
+      const request = await axios
+        .post("http://localhost:3000/login", {
+          address: username_input.value,
+          password: password_input.value
+        })
+        .then(function (response) {
+          console.log(response.data);
+          data.username = response.data;
+          localStorage.setItem("user", JSON.stringify(data));
+        });
+    } catch (e) {
+      console.error("zajebo si!!!!!");
+    } finally {
+      loading.value = false;
+      router.push("/");
     }
-    ).then(function (response){
-      console.log(response.data);
-      data.username = response.data;
-      localStorage.setItem("user", JSON.stringify(data));
-    });
-    
-  } catch (e) {
-    console.error("zajebo si!!!!!");
-  } finally {
-    loading.value = false;
-    router.push('/');
-    
   }
-  }
-  
-  
 }
 </script>
