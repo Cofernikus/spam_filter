@@ -5,9 +5,10 @@
       {{ data }}
     </pre>
     <h2 v-if="loading">Šaljem!!!!</h2>
-    <input v-model="recipientText" />
-    <gumb text="Prizovi API!!" @click="pozoviAPI" />
+    <input v-model="username_input" />
+    <input v-model="password_input" />
     <gumb text="Login" @click="login" />
+    
   </div>
 </template>
 
@@ -15,39 +16,46 @@
 import Gumb from "../components/Gumb.vue";
 import axios from "axios";
 import { ref } from "vue";
+import router from "@/router";
 
-const recipientText = ref("");
+const username_input = ref("");
+const password_input = ref("");
 const loading = ref(false);
 const data = ref();
 
-async function pozoviAPI() {
-  // sender, recipient, subject, sent_date
-  loading.value = true;
 
-  if (recipientText.value.length <= 4) {
+
+async function login() {
+  const data = {
+    id: "xyz",
+    username: "test"
+  };
+
+  if (username_input.value.length <= 4) {
     alert("!!!! lol");
+    loading.value = false;
   }
-
-  try {
-    const response = await axios.post("http://localhost:3000/api", {
-      sender: "fturkovic@tvz.hr",
-      recipient: recipientText.value,
-      subject: "tvoj",
-      sent_date: new Date().toISOString()
+  else{
+    try {
+    const request = await axios.post("http://localhost:3000/login", {
+      address: username_input.value,
+      password: password_input.value
+    }
+    ).then(function (response){
+      console.log(response.data);
+      data.username = response.data;
+      localStorage.setItem("user", JSON.stringify(data));
     });
-    data.value = response.data;
+    
   } catch (e) {
     console.error("zajebo si!!!!!");
   } finally {
     loading.value = false;
+    router.push('/');
+    
   }
-}
-
-function login() {
-  const data = {
-    id: "xyz",
-    username: "Pero"
-  };
-  localStorage.setItem("user", JSON.stringify(data));
+  }
+  
+  
 }
 </script>

@@ -1,44 +1,23 @@
 <template>
-  <div
-    id="neki"
-    :style="{
-      backgroundColor: korisnikUlogiran ? 'pink' : 'salmon'
-    }"
-  >
-    <div v-if="korisnikUlogiran">
-      Korisnik je tu!!! LOL!!
-      <gumb text="Logiraj se!" @click="odlogirajKorisnika" />
-    </div>
-    <div class="flex-column" v-else>
-      Ulogiraj se!!!!
-      <gumb text="Odlogiraj se!" @click="ulogirajKorinika" />
-    </div>
-    <gumb
-      style="margin: 5px"
-      :text="'Gumb ' + n"
-      @click="klikNaGumb"
-      v-for="(n, i) in 20"
-      :key="i"
-    />
+  <div>
+    Korisnik je tu!!! LOL!!
+    <gumb text="Odlogiraj se!" @click="odlogirajKorisnika" />
   </div>
+
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 import Gumb from "../components/Gumb.vue";
+import router from "@/router";
 
 const korisnikUlogiran = ref(false);
 
-function klikNaGumb() {
-  console.log("Bok!");
-}
-
-function ulogirajKorinika() {
-  korisnikUlogiran.value = true;
-}
-
 function odlogirajKorisnika() {
   korisnikUlogiran.value = false;
+  localStorage.removeItem('user');
+  router.replace('/login');
+  router.go(0);
 }
 </script>
 
