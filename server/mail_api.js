@@ -4,12 +4,13 @@ const router = express.Router();
 const axios = require("axios");
 const mysql = require("mysql");
 const cors = require("cors");
+require("dotenv").config();
 
 const con = mysql.createConnection({
-  host: "localhost",
-  user: "filipt",
-  password: "Lozinka1",
-  database: "spam_filter_db"
+  host: process.env.host,
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.database
 });
 
 app.use(express.json());
@@ -30,7 +31,7 @@ app.post("/api", cors(), (request, response) => {
 app.post("/login", (request, response) => {
   console.log("I RECEIVED DATA!!");
   console.log(request.body);
-  const sql = `SELECT name FROM users WHERE address = "${request.body.address}" AND password = "${request.body.password}"`;
+  const sql = `SELECT name FROM users WHERE address = "${request.body.address}"`;
   con.query(sql, function (err, result) {
     if (err) throw err;
     if (JSON.stringify(result) != "[]") {

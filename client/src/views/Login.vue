@@ -16,41 +16,30 @@ import Gumb from "../components/Gumb.vue";
 import axios from "axios";
 import { ref } from "vue";
 import router from "@/router";
+import { useUserStore } from "@/store/userStore";
 
 const username_input = ref("");
 const password_input = ref("");
 const loading = ref(false);
 const data = ref();
+const userStore = useUserStore();
 
 async function login() {
-  const audio = new Audio("/test.mp3");
-  audio.play();
-
-  const data = {
-    id: "xyz",
-    username: "test"
-  };
-
   if (username_input.value.length <= 4) {
     alert("!!!! lol");
     loading.value = false;
   } else {
     try {
-      const request = await axios
-        .post("http://localhost:3000/login", {
-          address: username_input.value,
-          password: password_input.value
-        })
-        .then(function (response) {
-          console.log(response.data);
-          data.username = response.data;
-          localStorage.setItem("user", JSON.stringify(data));
-        });
+      const { data } = await axios.post("http://localhost:3000/login", {
+        address: username_input.value,
+        password: password_input.value
+      });
+      userStore.login(data);
+      router.push("/");
     } catch (e) {
       console.error("zajebo si!!!!!");
     } finally {
       loading.value = false;
-      router.push("/");
     }
   }
 }

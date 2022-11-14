@@ -1,27 +1,24 @@
 <template>
   <div>
-    Korisnik je tu!!! LOL!!
-    <gumb text="Odlogiraj se!" @click="odlogirajKorisnika" />
+    <poruka :id="1" @delete="handleDeleteMessage" />
   </div>
-
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import Gumb from "../components/Gumb.vue";
+import Poruka from "../components/Poruka.vue";
 import router from "@/router";
 
-const korisnikUlogiran = ref(false);
-
 function odlogirajKorisnika() {
-  korisnikUlogiran.value = false;
-  localStorage.removeItem('user');
-  router.replace('/login');
+  router.replace("/login");
   router.go(0);
+}
+
+function handleDeleteMessage(id: number) {
+  console.log(`Brišem poruku ${id}!`);
 }
 </script>
 
-<style>
+<style scoped>
 #neki {
   background-color: pink;
   padding: 50px;

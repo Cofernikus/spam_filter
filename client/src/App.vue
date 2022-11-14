@@ -1,26 +1,34 @@
 <template>
-  <nav>
-    {{ "Current user: " + username }}
-    <router-link v-if="username" to="/">Home</router-link>
-    <router-link to="/login">Login</router-link>
+  <nav class="flex justify-between">
+    <div>
+      {{ name }}
+    </div>
+    <div>
+      <template v-if="isUserLoggedIn">
+        <router-link to="/">Home</router-link>
+        <gumb class="ml-2" text="Log out" @click="logOut" />
+      </template>
+    </div>
   </nav>
   <router-view />
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import { User } from "./models";
+import Gumb from "./components/Gumb.vue";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "./store/userStore";
+import { useRouter } from "vue-router";
 
-const username = computed(() => {
-  const localStorageKey = localStorage.getItem("user");
+const store = useUserStore();
+const router = useRouter();
+const { name, isUserLoggedIn } = storeToRefs(store);
 
-  if (localStorageKey) {
-    const userData: User = JSON.parse(localStorageKey);
-    return userData.username;
-  }
-
-  return "";
-});
+function logOut() {
+  store.logout();
+  router.push({
+    name: "login"
+  });
+}
 </script>
 
 <style>
